@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+die() { echo 1>&2 "$(basename "$0"):" "$@"; exit 1; }
+
+export base_dir="$(cd "$(dirname "$0")" && pwd -P)"
+export x11_dir="$base_dir/.build/x11"
+export HOME="$x11_dir/home"
+
+xvfb-run -h >/dev/null || die "Install Xvfb?"
+rm -rf "$x11_dir"; mkdir -p "$HOME"
+xvfb-run -n 30 -a -s '-screen 0 1920x1080x8' bash -c '
+    env | grep DISP
+    xwininfo -root
+'
